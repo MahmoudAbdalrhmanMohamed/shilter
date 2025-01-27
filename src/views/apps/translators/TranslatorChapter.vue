@@ -103,7 +103,7 @@
             :zoom="15"
             style="height: 400px; width: 100%"
           >
-            <Marker :options="{ position: 'center' }" />
+            <AdvancedMarker :options="{ position: mapCenter }" />
           </GoogleMap>
         </div>
       </div>
@@ -119,7 +119,7 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import { useI18n } from "vue-i18n";
-import { GoogleMap, Marker } from "vue3-google-map"; // Import GoogleMap and Marker components
+import { GoogleMap, AdvancedMarker } from "vue3-google-map"; // Import GoogleMap and Marker components
 import Swal from "sweetalert2"; // Import SweetAlert2
 import { useRoute } from "vue-router";
 
@@ -134,11 +134,7 @@ const isDetailsOpen = ref(true); // Track if details are open
 const googleMapsApiKey = "AIzaSyDA64gvZkZ_jVnaSoXLb-H0wc2A9xWpe_c";
 
 // Map center and marker options
-const mapCenter = ref({ lat: 35.151, lng: 27.156 }); // Default to New York
-const markerOptions = ref({
-  position: { lat: 35.151, lng: 27.156 }, // Default to New York
-  title: "Homeless Person Location",
-});
+const mapCenter = ref({}); // Default to New York
 
 // Fetch data from API
 const fetchData = async (id) => {
@@ -159,10 +155,6 @@ const fetchData = async (id) => {
     if (data.status) {
       dataToShow.value = data.data;
       mapCenter.value = {
-        lat: parseFloat(data.data.latitude),
-        lng: parseFloat(data.data.longitude),
-      };
-      markerOptions.value.position = {
         lat: parseFloat(data.data.latitude),
         lng: parseFloat(data.data.longitude),
       };
