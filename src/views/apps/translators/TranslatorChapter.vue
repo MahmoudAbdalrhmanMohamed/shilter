@@ -96,8 +96,27 @@
       <div class="card mb-5 mb-xl-8">
         <div class="card-body">
           <h3 class="fw-bold mb-5">{{ $t("locationMap") }}</h3>
+
+          <MapboxMap
+            style="height: 400px"
+            :zoom="10"
+            :center="[
+              parseFloat(dataToShow.latitude),
+              parseFloat(dataToShow.longitude),
+            ]"
+            map-style="mapbox://styles/yasta/cm6f68so800ao01r5dbboe5o5"
+            access-token="pk.eyJ1IjoieWFzdGEiLCJhIjoiY200cmhta2h1MDUxdzJ2c2J1Z2d4Z3VlcCJ9.DpzpUq61dpH0mYXqPYZjdw"
+          >
+            <MapboxMarker
+              :lng-lat="[
+                parseFloat(dataToShow.latitude),
+                parseFloat(dataToShow.longitude),
+              ]"
+            />
+          </MapboxMap>
+
           <!-- Google Map Component -->
-          <GoogleMap
+          <!-- <GoogleMap
             :api-key="googleMapsApiKey"
             :center="mapCenter"
             :mapId="googleMapsApiKey"
@@ -105,7 +124,7 @@
             style="height: 400px; width: 100%"
           >
             <AdvancedMarker :options="{ position: mapCenter }" />
-          </GoogleMap>
+          </GoogleMap> -->
         </div>
       </div>
     </div>
@@ -120,7 +139,8 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import { useI18n } from "vue-i18n";
-import { GoogleMap, AdvancedMarker } from "vue3-google-map"; // Import GoogleMap and Marker components
+import { MapboxMap, MapboxMarker } from "@studiometa/vue-mapbox-gl";
+import "mapbox-gl/dist/mapbox-gl.css"; // Import GoogleMap and Marker components
 import Swal from "sweetalert2"; // Import SweetAlert2
 import { useRoute } from "vue-router";
 
