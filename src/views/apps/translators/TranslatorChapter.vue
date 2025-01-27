@@ -95,11 +95,12 @@
       <!-- New Card for Map -->
       <div class="card mb-5 mb-xl-8">
         <div class="card-body">
-          <h3 class="fw-bold mb-5">Location Map</h3>
+          <h3 class="fw-bold mb-5">{{ $t("locationMap") }}</h3>
           <!-- Google Map Component -->
           <GoogleMap
             :api-key="googleMapsApiKey"
             :center="mapCenter"
+            :mapId="googleMapsApiKey"
             :zoom="15"
             style="height: 400px; width: 100%"
           >

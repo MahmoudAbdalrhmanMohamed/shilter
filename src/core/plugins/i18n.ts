@@ -2,6 +2,7 @@ import { createI18n } from "vue-i18n";
 
 const messages = {
   en: {
+    locationMap: "Location Map",
     numberOfHomelesses: "Number of Homelesses",
     latestHomelesses: "Latest Homelesses",
     latestesCategories: "Latest Categories",
@@ -588,6 +589,7 @@ const messages = {
     serviceDetails: "Service Details",
   },
   ar: {
+    locationMap: "خريطة الموقع",
     numberOfHomelesses: "عدد المشردين",
     latestHomelesses: "أحدث المشردين",
     latestesCategories: "أحدث الفئات",
