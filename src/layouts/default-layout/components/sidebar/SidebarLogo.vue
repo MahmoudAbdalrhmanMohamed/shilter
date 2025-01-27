@@ -1,27 +1,27 @@
 <template>
   <!--begin::Logo-->
-  <div class="app-sidebar-logo px-6" id="kt_app_sidebar_logo">
+  <div class="app-sidebar-logo" id="kt_app_sidebar_logo">
     <!--begin::Logo image-->
-    <router-link to="/">
+    <router-link to="/" class="mx-auto">
       <img
         v-if="
           layout === 'dark-sidebar' ||
           (themeMode === 'dark' && layout === 'light-sidebar')
         "
         alt="Logo"
-        :src="getAssetPath('logo.svg')"
-        class="w-150px app-sidebar-logo-default"
+        :src="getAssetPath('logo.png')"
+        class="w-40px mx-auto app-sidebar-logo-default"
       />
       <img
         v-if="themeMode === 'light' && layout === 'light-sidebar'"
         alt="Logo"
-        :src="getAssetPath('logo.svg')"
-        class="w-120px app-sidebar-logo-default"
+        :src="getAssetPath('logo.png')"
+        class="w-40px mx-auto app-sidebar-logo-default"
       />
       <img
         alt="Logo"
-        :src="getAssetPath('logo.svg')"
-        class="w-100px app-sidebar-logo-minimize"
+        :src="getAssetPath('logo.png')"
+        class="w-40px mx-auto app-sidebar-logo-minimize"
       />
     </router-link>
     <!--end::Logo image-->

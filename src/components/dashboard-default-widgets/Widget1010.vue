@@ -5,7 +5,7 @@
       <!--begin::Title-->
       <h3 class="card-title align-items-start flex-column">
         <span class="card-label fw-bold text-gray-800">{{
-          $t("Number Of New Registered Users")
+          $t("latestesCategories")
         }}</span>
       </h3>
     </div>
@@ -21,7 +21,7 @@
                 class="p-0 pb-3 min-w-175px px-6"
                 :class="locale === 'en' ? 'text-start' : 'text-end'"
               >
-                {{ $t("users") }}
+                {{ $t("name") }}
               </th>
               <th
                 class="p-0 pb-3 min-w-100px"

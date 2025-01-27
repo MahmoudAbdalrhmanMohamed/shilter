@@ -59,8 +59,8 @@
           <router-link to="/" class="d-lg-none">
             <img
               alt="Logo"
-              :src="getAssetPath('logo.webp')"
-              class="w-100px"
+              :src="getAssetPath('logo.png')"
+              class="w-40px object-cover mix"
             />
           </router-link>
         </div>

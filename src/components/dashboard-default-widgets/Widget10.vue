@@ -5,7 +5,7 @@
       <!--begin::Title-->
       <h3 class="card-title align-items-start flex-column">
         <span class="card-label fw-bold text-gray-800">{{
-          $t("Number Of New Published Comics")
+          $t("latestHomelesses")
         }}</span>
       </h3>
     </div>
@@ -21,13 +21,13 @@
                 class="p-0 pb-3 min-w-175px px-6"
                 :class="locale === 'en' ? 'text-start' : 'text-end'"
               >
-                {{ $t("comic") }}
+                {{ $t("photo") }}
               </th>
               <th
                 class="p-0 pb-3 min-w-100px"
                 :class="locale === 'en' ? 'text-start' : 'text-end'"
               >
-                {{ $t("description") }}
+                {{ $t("status") }}
               </th>
               <th class="p-0 pb-3 min-w-100px">
                 {{ $t("address") }}
@@ -47,42 +47,39 @@
                       <div class="symbol symbol-50px mx-4">
                         <img :src="row.image" class="" alt="" />
                       </div>
-
-                      <div class="d-flex justify-content-start flex-column">
-                        <router-link
-                          :to="`/apps/workshops/workshop/${row.id}`"
-                          class="text-gray-800 fw-bold text-hover-primary mb-1 fs-6"
-                          >{{ row.name }}</router-link
-                        >
-                        <span class="text-gray-500 fw-semibold d-block fs-7">{{
-                          row.phone
-                        }}</span>
-                      </div>
                     </div>
                   </td>
 
-                  <td class="pe-0">
+                  <!-- Status Column -->
+                  <td class="p-0">
                     <span
-                      class="text-gray-600 fw-bold fs-6 overflow-hidden text-ellipsis max-w-40"
-                      :class="locale === 'en' ? '' : 'text-end'"
-                    >
-                      {{ row.description }}</span
+                      class="text-base capitalize md:text-lg"
+                      :class="[
+                        'badge',
+                        row.status === 'approved'
+                          ? 'badge-success'
+                          : row.status === 'rejected'
+                            ? 'badge-danger'
+                            : 'badge-warning',
+                      ]"
+                      >{{ row.status }}</span
                     >
                   </td>
 
+                  <!-- Address Column -->
                   <td class="p-0">
                     <span
                       :class="[
-                        `badge py-3 px-4 fs-7 overflow-hidden text-ellipsis max-w-40`,
+                        `badge md:text-lg text-base py-1  text-ellipsis max-w-40`,
                         locale === 'en' ? '' : 'text-end',
                       ]"
                       >{{ row.address }}</span
                     >
                   </td>
 
-                  <td class="text-end">
+                  <td class="text-end p-0">
                     <router-link
-                      :to="`/apps/workshops/workshop/${row.id}`"
+                      :to="`/apps/homelesses/homeless/${row.id}`"
                       class="btn btn-sm btn-icon btn-bg-light btn-active-color-primary w-30px h-30px"
                     >
                       <KTIcon
@@ -106,81 +103,24 @@
     <!--end: Card Body-->
   </div>
 </template>
+
 <script setup>
-import { getAssetPath } from "@/core/helpers/assets";
 import { useI18n } from "vue-i18n";
 const { locale } = useI18n();
-
-const table = [
-  {
-    img: getAssetPath("media/stock/600x600/img-49.jpg"),
-    title: "Mivy App",
-    name: "Jane Cooper",
-    price: "32,400",
-    statistics: "9.2",
-    icon: true,
-    chartColor: "success",
-    status: {
-      label: "In Process",
-      state: "primary",
-    },
-  },
-  {
-    img: getAssetPath("media/stock/600x600/img-40.jpg"),
-    title: "Avionica",
-    name: "Esther Howard",
-    price: "256,910",
-    statistics: "0.4",
-    icon: false,
-    chartColor: "danger",
-    status: {
-      label: "On Hold",
-      state: "warning",
-    },
-  },
-  {
-    img: getAssetPath("media/stock/600x600/img-39.jpg"),
-    title: "Charto CRM",
-    name: "Jenny Wilson",
-    price: "8,220",
-    statistics: "9.2",
-    icon: true,
-    chartColor: "success",
-    status: {
-      label: "In Process",
-      state: "primary",
-    },
-  },
-  {
-    img: getAssetPath("media/stock/600x600/img-47.jpg"),
-    title: "Tower Hill",
-    name: "Cody Fisher",
-    price: "74,000",
-    statistics: "9.2",
-    icon: true,
-    chartColor: "success",
-    status: {
-      label: "Completed",
-      state: "success",
-    },
-  },
-  {
-    img: getAssetPath("media/stock/600x600/img-48.jpg"),
-    title: "9 Degree",
-    name: "Savannah Nguyen",
-    price: "183,300",
-    statistics: "0.4",
-    icon: false,
-    chartColor: "danger",
-    status: {
-      label: "In Process",
-      state: "primary",
-    },
-  },
-];
 
 defineProps({
   className: { type: String, required: false },
   workshops: { required: false },
 });
 </script>
+
+<style scoped>
+/* Custom styles to remove extra padding */
+td.p-0 {
+  padding: 0 !important;
+}
+
+.badge {
+  padding: 0.25rem 0.5rem; /* Adjust badge padding as needed */
+}
+</style>

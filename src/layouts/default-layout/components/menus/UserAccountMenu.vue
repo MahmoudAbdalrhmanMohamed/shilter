@@ -82,7 +82,7 @@
     <!--end::Menu item-->
 
     <!--begin::Menu item-->
-    <div class="menu-item px-5 my-1">
+    <!-- <div class="menu-item px-5 my-1">
       <router-link to="/apps/admins/updateName" class="menu-link px-5">
         {{ $t("updateName") }}
       </router-link>
@@ -96,7 +96,7 @@
       <router-link to="/apps/admins/updatePassword" class="menu-link px-5">
         {{ $t("updatePassword") }}
       </router-link>
-    </div>
+    </div> -->
 
     <!--end::Menu item-->
 
@@ -125,12 +125,14 @@ locale.value = localStorage.getItem("lang") || "en";
 
 document.documentElement.style.direction =
   localStorage.getItem("direction") || "ltr";
+document.documentElement.dir = localStorage.getItem("direction") || "ltr";
 
 watch(
   () => locale.value,
   () => {
     document.documentElement.style.direction =
       locale.value === "ar" ? "rtl" : "ltr";
+    document.documentElement.dir = locale.value === "ar" ? "rtl" : "ltr";
   },
 );
 
@@ -236,5 +238,6 @@ const countries = {
 };
 
 const currentLanguage = computed(() => locale.value);
+const currentDir = computed(() => (locale.value === "ar" ? "rtl" : "ltr"));
 const currentLangugeLocale = computed(() => countries[locale.value]);
 </script>

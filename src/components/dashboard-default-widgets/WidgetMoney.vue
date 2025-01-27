@@ -5,7 +5,7 @@
       <!--begin::Title-->
       <h3 class="card-title align-items-start flex-column">
         <span class="card-label fw-bold text-gray-900">
-          {{ $t("Request Translated Chapters") }}
+          {{ $t("requestHomelesses") }}
         </span>
       </h3>
       <!--end::Title-->
@@ -20,9 +20,9 @@
         ref="chartRef"
         :options="chart"
         :series="[
-          { name: $t('Number Of Pending'), data: [...data.earning] },
-          { name: $t('Number Of Approved'), data: [...data.workshops] },
-          { name: $t('Number Of Rejected'), data: [...data.users] },
+          { name: $t('numberOfHomelesses'), data: [...data] },
+          // { name: $t('Number Of Approved'), data: [...data.workshops] },
+          // { name: $t('Number Of Rejected'), data: [...data.users] },
         ]"
         :height="height"
       ></apexchart>
@@ -46,6 +46,7 @@
 import { ref, computed, onMounted, watch } from "vue";
 import { getCSSVariableValue } from "@/assets/ts/_utils";
 import { useThemeStore } from "@/stores/theme";
+import { useI18n } from "vue-i18n";
 
 // Props
 const props = defineProps({
@@ -60,6 +61,9 @@ const chart = ref({});
 
 const themeStore = useThemeStore();
 const themeMode = computed(() => themeStore.mode);
+
+// Detect RTL or LTR direction
+const isRTL = computed(() => document.documentElement.dir === "rtl");
 
 // Zoom functionality
 let zoomLevel = ref(6);
@@ -84,6 +88,17 @@ const refreshChart = () => {
   }
 };
 
+// Function to generate days of the current month up to the current day
+const generateDaysOfMonth = () => {
+  const today = new Date();
+  const currentDay = today.getDate();
+  const days = [];
+  for (let i = 1; i <= currentDay; i++) {
+    days.push(i.toString());
+  }
+  return days;
+};
+
 // Mounting chart options
 onMounted(() => {
   Object.assign(chart.value, chartOptions(props.height, zoomLevel.value));
@@ -93,6 +108,13 @@ onMounted(() => {
 watch(themeMode, () => {
   refreshChart();
 });
+
+// Watch RTL/LTR changes to update the chart
+watch(isRTL, () => {
+  refreshChart();
+});
+
+const { locale } = useI18n();
 
 // Chart options generator
 const chartOptions = (height, tickAmount) => {
@@ -115,6 +137,7 @@ const chartOptions = (height, tickAmount) => {
       zoom: {
         enabled: true,
       },
+      rtl: isRTL.value, // Enable RTL mode dynamically
     },
     plotOptions: {},
     legend: {
@@ -139,41 +162,7 @@ const chartOptions = (height, tickAmount) => {
       colors: [pendingColor, approvedColor, rejectedColor], // Assign colors to series
     },
     xaxis: {
-      categories: [
-        "",
-        "1",
-        "2",
-        "3",
-        "4",
-        "5",
-        "6",
-        "7",
-        "8",
-        "9",
-        "10",
-        "11",
-        "12",
-        "13",
-        "14",
-        "15",
-        "16",
-        "17",
-        "18",
-        "19",
-        "20",
-        "21",
-        "22",
-        "23",
-        "24",
-        "25",
-        "26",
-        "27",
-        "28",
-        "29",
-        "30",
-        "31",
-        "",
-      ],
+      categories: generateDaysOfMonth(), // Generate days of the current month up to today
       axisBorder: {
         show: false,
       },
@@ -186,17 +175,18 @@ const chartOptions = (height, tickAmount) => {
           colors: labelColor,
           fontSize: "12px",
         },
+        offsetX: 10, // Add padding to the left and right of x-axis labels
+        offsetY: 5, // Add padding above and below x-axis labels
       },
     },
     yaxis: {
-      max: 120,
-      min: 30,
       tickAmount: tickAmount, // Dynamic zoom for Y-axis
       labels: {
         style: {
           colors: labelColor,
           fontSize: "12px",
         },
+        offsetX: locale.value === "en" ? 5 : -10, // Add padding to the left and right of y-axis labels
       },
     },
     colors: [pendingColor, approvedColor, rejectedColor], // Color configuration for area fill

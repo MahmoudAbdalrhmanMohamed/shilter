@@ -72,6 +72,7 @@
         <!-- Year Column -->
         <template v-slot:status="{ row: publisher }">
           <span
+            class="text-base capitalize md:text-lg"
             :class="[
               'badge',
               publisher.status === 'approved'

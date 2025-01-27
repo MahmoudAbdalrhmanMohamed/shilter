@@ -31,7 +31,7 @@
         <router-link to="/" class="mb-0 mb-lg-12">
           <img
             alt="Logo"
-            :src="getAssetPath('logo.svg')"
+            :src="getAssetPath('logo.png')"
             class="h-130px h-lg-150px"
           />
         </router-link>
@@ -75,12 +75,12 @@
     </div>
     <router-link
       to="/"
-      class="mb-0 mb-lg-12 d-flex justify-center dark:bg-black/50 d-lg-none"
+      class="mb-0 py-8 mb-lg-12 d-flex justify-center dark:bg-black/50 d-lg-none"
     >
       <img
         alt="Logo"
-        :src="getAssetPath('logo.svg')"
-        class="h-130px h-lg-150px"
+        :src="getAssetPath('logo.png')"
+        class="h-[120px]"
       />
     </router-link>
     <!--end::Aside-->
