@@ -25,31 +25,31 @@ const routes: Array<RouteRecordRaw> = [
         },
       },
       {
-        path: "/apps/publishers/addPublisher",
-        name: "apps-publishers-add",
+        path: "/apps/categories/addCategorie",
+        name: "apps-categories-add",
         component: () => import("@/views/apps/publishers/addPublisher.vue"),
         meta: {
-          pageTitle: "addPublisher",
-          breadcrumbs: ["Apps", "Publishers", "Add Publisher"],
+          pageTitle: "addCategorie",
+          breadcrumbs: ["Apps", "categories", "addCategorie"],
         },
       },
       {
-        path: "/apps/publishers/updatePublisher/:updatePublisher",
-        name: "apps-publishers-updatePublisher",
+        path: "/apps/categories/updateCategorie/:updatePublisher",
+        name: "apps-publishers-updateCategorie",
         component: () => import("@/views/apps/publishers/UpdatePublisher.vue"),
         meta: {
-          pageTitle: "updatePublisher",
-          breadcrumbs: ["Apps", "Publishers", "Update Publisher"],
+          pageTitle: "updateCategorie",
+          breadcrumbs: ["Apps", "categories", "updateCategorie"],
         },
       },
       {
-        path: "/apps/publishers/all",
-        name: "apps-publishers-all",
+        path: "/apps/categories/all",
+        name: "apps-categories-all",
         component: () =>
           import("@/views/apps/publishers/PublishersComponent.vue"),
         meta: {
-          pageTitle: "Publishers",
-          breadcrumbs: ["Apps", "Publishers"],
+          pageTitle: "categories",
+          breadcrumbs: ["Apps", "categories"],
         },
       },
 

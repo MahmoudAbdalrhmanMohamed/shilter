@@ -186,8 +186,8 @@ const fetchData = async (page = 1) => {
         hasMore.value = false;
       }
     } else {
-      localStorage.removeItem("authToken");
-      router.replace("/");
+      // localStorage.removeItem("authToken");
+      // router.replace("/");
       // Swal.fire({
       //  icon: "error",
       //  title: t("common.error"),
@@ -195,8 +195,8 @@ const fetchData = async (page = 1) => {
       // });
     }
   } catch (error) {
-    localStorage.removeItem("authToken");
-    router.replace("/");
+    // localStorage.removeItem("authToken");
+    // router.replace("/");
     //Swal.fire({
     //  icon: "error",
     // title: t("common.error"),

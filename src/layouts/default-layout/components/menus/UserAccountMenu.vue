@@ -201,38 +201,38 @@ const countries = {
     flag: getAssetPath("media/flags/Saudi_Arabia.svg"),
     name: t("Arabic"),
   },
-  zh: {
-    flag: getAssetPath("media/flags/china.svg"),
-    name: t("Chinese"),
-  },
-  hi: {
-    flag: getAssetPath("media/flags/india.svg"),
-    name: t("Hindi"),
-  },
-  it: {
-    flag: getAssetPath("media/flags/italy.svg"),
-    name: t("Italian"),
-  },
-  es: {
-    flag: getAssetPath("media/flags/spain.svg"),
-    name: t("Spanish"),
-  },
-  ru: {
-    flag: getAssetPath("media/flags/russia.svg"),
-    name: t("Russian"),
-  },
-  tr: {
-    flag: getAssetPath("media/flags/turkey.svg"),
-    name: t("Turkish"),
-  },
-  fr: {
-    flag: getAssetPath("media/flags/france.svg"),
-    name: t("French"),
-  },
-  de: {
-    flag: getAssetPath("media/flags/germany.svg"),
-    name: t("German"),
-  },
+  // zh: {
+  //   flag: getAssetPath("media/flags/china.svg"),
+  //   name: t("Chinese"),
+  // },
+  // hi: {
+  //   flag: getAssetPath("media/flags/india.svg"),
+  //   name: t("Hindi"),
+  // },
+  // it: {
+  //   flag: getAssetPath("media/flags/italy.svg"),
+  //   name: t("Italian"),
+  // },
+  // es: {
+  //   flag: getAssetPath("media/flags/spain.svg"),
+  //   name: t("Spanish"),
+  // },
+  // ru: {
+  //   flag: getAssetPath("media/flags/russia.svg"),
+  //   name: t("Russian"),
+  // },
+  // tr: {
+  //   flag: getAssetPath("media/flags/turkey.svg"),
+  //   name: t("Turkish"),
+  // },
+  // fr: {
+  //   flag: getAssetPath("media/flags/france.svg"),
+  //   name: t("French"),
+  // },
+  // de: {
+  //   flag: getAssetPath("media/flags/germany.svg"),
+  //   name: t("German"),
+  // },
 };
 
 const currentLanguage = computed(() => locale.value);

@@ -15,7 +15,7 @@
           v-model="search"
           @input="debouncedSearch"
           class="form-control form-control-solid w-250px ps-15"
-          :placeholder="$t('searchPublishers')"
+          :placeholder="$t('searchCategories')"
         />
       </div>
 
@@ -27,11 +27,11 @@
           data-kt-customer-table-toolbar="base"
         >
           <router-link
-            :to="{ name: 'apps-publishers-add' }"
+            :to="{ name: 'apps-categories-add' }"
             class="btn btn-primary"
           >
             <KTIcon icon-name="plus" icon-class="fs-2" />
-            {{ $t("addPublisher") }}
+            {{ $t("addCategorie") }}
           </router-link>
         </div>
         <div
@@ -73,35 +73,14 @@
         <template v-slot:name="{ row: publisher }">{{
           publisher.name[locale]
         }}</template>
+        <template v-slot:updated_at="{ row: publisher }">{{
+          formatDate(publisher.updated_at)
+        }}</template>
+        <template v-slot:created_at="{ row: publisher }">
+          {{ formatDate(publisher.created_at) }}</template
+        >
         <!-- Username Column -->
-        <template v-slot:slug="{ row: publisher }">{{
-          publisher.slug[locale]
-        }}</template>
-        <!-- Username Column -->
-        <template v-slot:description="{ row: publisher }">{{
-          publisher.description[locale]
-        }}</template>
-        <!-- Language Column -->
-        <template v-slot:language="{ row: publisher }">{{
-          publisher.language
-        }}</template>
-        <!-- Year Column -->
-        <template v-slot:year="{ row: publisher }">{{
-          publisher.year
-        }}</template>
-        <!-- Rate Column -->
-        <template v-slot:rate="{ row: publisher }"
-          ><Stars :value="Number(publisher.rate)"
-        /></template>
-        <!-- Logo Column -->
-        <template v-slot:logo="{ row: publisher }">
-          <img
-            :src="publisher.image"
-            alt="Publisher Logo"
-            class="img-thumbnail"
-            style="max-height: 200px; max-width: 100px"
-          />
-        </template>
+
         <!-- Actions Column -->
         <template v-slot:actions="{ row: publisher }">
           <a
@@ -120,7 +99,7 @@
             <div class="menu-item px-3">
               <router-link
                 class="menu-link px-3 w-full"
-                :to="`/apps/publishers/updatePublisher/${publisher.id}`"
+                :to="`/apps/categories/updateCategorie/${publisher.id}`"
               >
                 {{ $t("edit") }}
               </router-link>
@@ -175,7 +154,7 @@ const fetching = async (page = 1) => {
     load.value = true;
 
     const response = await fetch(
-      `${import.meta.env.VITE_APP_API_URL_NEW}/publishers?page=${page}`,
+      `${import.meta.env.VITE_APP_API_URL_NEW}/categories?page=${page}`,
       {
         method: "GET",
         headers: {
@@ -188,10 +167,6 @@ const fetching = async (page = 1) => {
     if (!response.ok) {
       const errorData = await response.json(); // Parse error response body
       console.error("Error response:", response.status, errorData);
-      if (response.status === 401) {
-        localStorage.removeItem("authToken");
-        router.replace("/");
-      }
     }
 
     const data = await response.json();
@@ -224,34 +199,16 @@ const tableHeader = ref([
     columnWidth: 175,
   },
   {
-    columnName: "slug",
-    columnLabel: "slug",
+    columnName: "created_at",
+    columnLabel: "created_at",
     sortEnabled: true,
-    columnWidth: 175,
+    columnWidth: 300,
   },
   {
-    columnName: "year",
-    columnLabel: "year",
+    columnName: "updated_at",
+    columnLabel: "updated_at",
     sortEnabled: true,
-    columnWidth: 175,
-  },
-  {
-    columnName: "description",
-    columnLabel: "description",
-    sortEnabled: false,
-    columnWidth: 175,
-  },
-  {
-    columnName: "rate",
-    columnLabel: "rate",
-    sortEnabled: true,
-    columnWidth: 175,
-  },
-  {
-    columnName: "logo",
-    columnLabel: "logo",
-    sortEnabled: false,
-    columnWidth: 175,
+    columnWidth: 300,
   },
   {
     columnName: "actions",
@@ -265,7 +222,7 @@ const tableHeader = ref([
 const deletePublisher = async (id) => {
   const confirmResult = await Swal.fire({
     title: "Are you sure?",
-    text: "You are about to delete this publisher.",
+    text: "You are about to delete this categorie.",
     icon: "warning",
     showCancelButton: true,
     confirmButtonText: "Yes, delete it!",
@@ -279,7 +236,7 @@ const deletePublisher = async (id) => {
   if (confirmResult.isConfirmed) {
     try {
       await useFetch(
-        `${import.meta.env.VITE_APP_API_URL_NEW}/publishers/${id}`,
+        `${import.meta.env.VITE_APP_API_URL_NEW}/categories/${id}`,
         {
           method: "DELETE",
           headers: {
@@ -297,16 +254,16 @@ const deletePublisher = async (id) => {
 
       Swal.fire({
         title: "Deleted!",
-        text: "The publisher has been deleted.",
+        text: "The categorie has been deleted.",
         icon: "success",
         confirmButtonText: "OK",
         customClass: { confirmButton: "btn btn-primary" },
       });
     } catch (error) {
-      console.error("Error deleting publisher:", error);
+      console.error("Error deleting categorie:", error);
       Swal.fire({
         title: "Error!",
-        text: "Failed to delete the publisher. Please try again.",
+        text: "Failed to delete the categorie. Please try again.",
         icon: "error",
         confirmButtonText: "OK",
         customClass: { confirmButton: "btn btn-danger" },
@@ -321,7 +278,7 @@ const deleteSelectedPublishers = async () => {
 
   const confirmResult = await Swal.fire({
     title: "Are you sure?",
-    text: `You are about to delete ${selectedIds.value.length} publishers.`,
+    text: `You are about to delete ${selectedIds.value.length} categories.`,
     icon: "warning",
     showCancelButton: true,
     confirmButtonText: "Yes, delete them!",
@@ -336,7 +293,7 @@ const deleteSelectedPublishers = async () => {
     try {
       await Promise.all(
         selectedIds.value.map((id) =>
-          useFetch(`${import.meta.env.VITE_APP_API_URL_NEW}/publishers/${id}`, {
+          useFetch(`${import.meta.env.VITE_APP_API_URL_NEW}/categories/${id}`, {
             method: "DELETE",
             headers: {
               Authorization: `Bearer ${localStorage.getItem("authToken")}`,
@@ -354,17 +311,17 @@ const deleteSelectedPublishers = async () => {
 
       Swal.fire({
         title: "Deleted!",
-        text: "The selected publishers have been deleted.",
+        text: "The selected categories have been deleted.",
         icon: "success",
         confirmButtonText: "OK",
         customClass: { confirmButton: "btn btn-primary" },
       });
       selectedIds.value = [];
     } catch (error) {
-      console.error("Error deleting selected publishers:", error);
+      console.error("Error deleting selected categories:", error);
       Swal.fire({
         title: "Error!",
-        text: "Failed to delete some publishers. Please try again.",
+        text: "Failed to delete some categories. Please try again.",
         icon: "error",
         confirmButtonText: "OK",
         customClass: { confirmButton: "btn btn-danger" },
@@ -416,4 +373,17 @@ onMounted(() => {
     new Dropdown(element);
   });
 });
+
+const formatDate = (dateString) => {
+  const date = new Date(dateString);
+  return new Intl.DateTimeFormat("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    timeZone: "UTC", // Adjust timezone if needed
+  }).format(date);
+};
 </script>

@@ -2,6 +2,10 @@ import { createI18n } from "vue-i18n";
 
 const messages = {
   en: {
+    categories: "Categories",
+    addCategorie: "Add Category",
+    searchCategories: "Search Categories",
+    updateCategorie: "Update Category",
     websiteType: "Website Type",
     rank: "Chapter Rank",
     "Comic ID": "Comic ID",
@@ -572,6 +576,10 @@ const messages = {
     serviceDetails: "Service Details",
   },
   ar: {
+    categories: "الفئات",
+    addCategorie: "إضافة فئة",
+    searchCategories: "بحث الفئات",
+    updateCategorie: "تحديث الفئة",
     websiteType: "نوع الموقع",
     rank: "رتبة الفصل",
     "Comic ID": "معرف الكوميك",
@@ -1126,8 +1134,8 @@ const messages = {
     serviceDetails: "تفاصيل الخدمة",
   },
   zh: {
-    "websiteType": "网站类型",
-     "rank": "章节排名",
+    websiteType: "网站类型",
+    rank: "章节排名",
     "Comic ID": "漫画编号",
     "Translator ID": "翻译编号",
     Rank: "排名",
@@ -1677,8 +1685,8 @@ const messages = {
     serviceDetails: "服务详情",
   },
   hi: {
-    "websiteType": "वेबसाइट प्रकार",
-     "rank": "अध्याय रैंक",
+    websiteType: "वेबसाइट प्रकार",
+    rank: "अध्याय रैंक",
     "Comic ID": "कॉमिक आईडी",
     "Translator ID": "अनुवादक आईडी",
     Rank: "रैंक",
@@ -2235,8 +2243,8 @@ const messages = {
     serviceDetails: "सेवा विवरण",
   },
   it: {
-    "websiteType": "Tipo di sito web",
-    "rank": "Classifica del Capitolo",
+    websiteType: "Tipo di sito web",
+    rank: "Classifica del Capitolo",
     "Comic ID": "ID fumetto",
     "Translator ID": "ID traduttore",
     Rank: "Classifica",
@@ -5597,13 +5605,13 @@ export default i18n;
 
 //   },
 //   "zh": {
-//     
+//
 //   },
 //   "hi": {
-//     
+//
 //   },
 //   "it": {
-//     
+//
 //   },
 //   "es": {
 //     "websiteType": "Tipo de sitio web",

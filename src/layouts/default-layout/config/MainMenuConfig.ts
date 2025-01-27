@@ -16,14 +16,14 @@ const MainMenuConfig: Array<MenuItem> = [
     route: "/apps",
     pages: [
       {
-        sectionTitle: "Publishers",
-        route: "/publishers",
+        sectionTitle: "categories",
+        route: "/categories",
         keenthemesIcon: "technology-3",
         bootstrapIcon: "bi-printer",
         sub: [
           {
-            heading: "Publishers",
-            route: "/apps/publishers/all",
+            heading: "categories",
+            route: "/apps/categories/all",
           },
           {
             heading: "Add Publisher",
@@ -31,7 +31,7 @@ const MainMenuConfig: Array<MenuItem> = [
           },
         ],
       },
-      
+
       {
         sectionTitle: "Artists",
         route: "/artists",
