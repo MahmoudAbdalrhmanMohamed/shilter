@@ -3,39 +3,53 @@
     <!-- Form -->
     <VForm
       class="form w-full"
-      id="kt_update_writer_form"
+      id="kt_update_homeless_form"
       @submit="onSubmitUpdate"
       :validation-schema="updateSchema"
     >
       <!-- Heading -->
       <div class="text-center mb-10">
         <h1 class="text-gray-900 mb-3 text-xl md:text-3xl">
-          {{ $t("updateWriter") }}
+          {{ $t("updateHomeless") }}
         </h1>
       </div>
 
-      <!-- Names and Slugs in Multiple Languages -->
-      <div v-for="lang in languages" :key="lang.code" class="mb-10">
-        <h2 class="text-2xl capitalize font-bold text-gray-800">
-          {{ $t(lang.lang) }}
-        </h2>
-        <hr class="w-full mb-4 bg-gray-800" />
-
-        <!-- Name -->
+      <!-- Address and Note Fields -->
+      <div class="mb-10">
+        <!-- Address -->
         <div class="fv-row mb-5">
           <label class="form-label fs-6 fw-bold text-gray-900">{{
-            $t("name")
+            $t("address")
           }}</label>
           <Field
-            :name="`name_${lang.code}`"
-            v-model="writerData.name[lang.code]"
+            name="address"
+            v-model="homelessData.address"
             class="form-control form-control-lg form-control-solid"
             type="text"
             autocomplete="off"
           />
           <div class="fv-plugins-message-container">
             <div class="fv-help-block">
-              <ErrorMessage :name="`name_${lang.code}`" />
+              <ErrorMessage name="address" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Note -->
+        <div class="fv-row mb-5">
+          <label class="form-label fs-6 fw-bold text-gray-900">{{
+            $t("note")
+          }}</label>
+          <Field
+            name="note"
+            v-model="homelessData.note"
+            class="form-control form-control-lg form-control-solid"
+            type="text"
+            autocomplete="off"
+          />
+          <div class="fv-plugins-message-container">
+            <div class="fv-help-block">
+              <ErrorMessage name="note" />
             </div>
           </div>
         </div>
@@ -46,10 +60,10 @@
         <button
           type="submit"
           ref="submitButton"
-          id="kt_update_writer_submit"
+          id="kt_update_homeless_submit"
           class="btn btn-lg btn-primary w-100 mb-5"
         >
-          <span class="indicator-label">{{ $t("updateWriter") }}</span>
+          <span class="indicator-label">{{ $t("updateHomeless") }}</span>
           <span class="indicator-progress">
             {{ $t("pleaseWait") }}
             <span
@@ -65,7 +79,6 @@
     <span class="loader"></span>
   </div>
 </template>
-
 <script setup>
 import { ref, reactive, onMounted } from "vue";
 import { useRouter, useRoute } from "vue-router";
@@ -81,38 +94,23 @@ const submitButton = ref(null);
 
 const { t } = useI18n();
 
-const languages = [
-  { lang: "arabic", code: "ar" },
-  { lang: "english", code: "en" },
-  { lang: "chinese", code: "zh" },
-  { lang: "indian", code: "hi" },
-  { lang: "italian", code: "it" },
-  { lang: "spanish", code: "es" },
-  { lang: "russian", code: "ru" },
-  { lang: "turkish", code: "tr" },
-  { lang: "french", code: "fr" },
-  { lang: "german", code: "de" },
-];
-
-// Writer data
-const writerData = reactive({
-  name: {},
+// Homeless data
+const homelessData = reactive({
+  address: "",
+  note: "",
 });
 
 // Validation schema
-const updateSchema = Yup.object().shape(
-  Object.fromEntries(
-    languages.flatMap(({ code }) => [
-      [`name_${code}`, Yup.string().required(t("nameRequired"))],
-    ]),
-  ),
-);
+const updateSchema = Yup.object().shape({
+  address: Yup.string().required(t("addressRequired")),
+  note: Yup.string().nullable(),
+});
 
-// Fetch writer details on mount
+// Fetch homeless details on mount
 onMounted(async () => {
   try {
     const response = await fetch(
-      `${import.meta.env.VITE_APP_API_URL_NEW}/writers/${route.params.updateWriter}`,
+      `${import.meta.env.VITE_APP_API_URL_NEW}/homelesses/${route.params.updateHomeless}`,
       {
         method: "GET",
         headers: {
@@ -124,11 +122,10 @@ onMounted(async () => {
     const data = await response.json();
 
     if (response.ok && data?.data) {
-      const writer = data.data;
+      const homeless = data.data;
 
-      languages.forEach(({ code }) => {
-        writerData.name[code] = writer.name[code] || "";
-      });
+      homelessData.address = homeless.address || "";
+      homelessData.note = homeless.note || "";
 
       loading.value = false;
     } else {
@@ -154,15 +151,12 @@ const onSubmitUpdate = async (values) => {
   loading.value = true;
   try {
     const payload = {
-      name: {},
+      address: values.address,
+      note: values.note,
     };
 
-    languages.forEach(({ code }) => {
-      payload.name[code] = values[`name_${code}`];
-    });
-
     const response = await fetch(
-      `${import.meta.env.VITE_APP_API_URL_NEW}/writers/${route.params.updateWriter}`,
+      `${import.meta.env.VITE_APP_API_URL_NEW}/homelesses/${route.params.updateHomeless}`,
       {
         method: "PUT",
         headers: {
@@ -177,12 +171,12 @@ const onSubmitUpdate = async (values) => {
 
     if (response.ok && data?.status) {
       Swal.fire({
-        text: data.message || t("writerUpdated"),
+        text: data.message || t("homelessUpdated"),
         icon: "success",
         buttonsStyling: true,
         confirmButtonText: t("okGotIt"),
       }).then(() => {
-        router.replace({ name: "apps-writers-all" });
+        router.replace({ name: "apps-homeless-all" });
       });
     } else {
       throw new Error(data?.message || t("updateFailed"));

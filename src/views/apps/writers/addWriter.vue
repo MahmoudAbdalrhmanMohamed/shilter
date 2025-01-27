@@ -80,14 +80,14 @@ const submitButton = ref(null);
 const languages = [
   { lang: "arabic", code: "ar" },
   { lang: "english", code: "en" },
-  { lang: "chinese", code: "zh" },
-  { lang: "indian", code: "hi" },
-  { lang: "italian", code: "it" },
-  { lang: "spanish", code: "es" },
-  { lang: "russian", code: "ru" },
-  { lang: "turkish", code: "tr" },
-  { lang: "french", code: "fr" },
-  { lang: "german", code: "de" },
+  // { lang: "chinese", code: "zh" },
+  // { lang: "indian", code: "hi" },
+  // { lang: "italian", code: "it" },
+  // { lang: "spanish", code: "es" },
+  // { lang: "russian", code: "ru" },
+  // { lang: "turkish", code: "tr" },
+  // { lang: "french", code: "fr" },
+  // { lang: "german", code: "de" },
 ];
 
 // Validation schema
@@ -121,7 +121,7 @@ const onSubmit = async (values) => {
 
     // Make API request
     const response = await fetch(
-      `${import.meta.env.VITE_APP_API_URL_NEW}/writers`,
+      `${import.meta.env.VITE_APP_API_URL_NEW}/homelesses`,
       {
         method: "POST",
         headers: {

@@ -15,7 +15,7 @@
           v-model="search"
           @input="debouncedSearch"
           class="form-control form-control-solid w-250px ps-15"
-          :placeholder="$t('searchWriters')"
+          :placeholder="$t('searchHomelesses')"
         />
       </div>
 
@@ -26,13 +26,13 @@
           class="d-flex justify-content-end"
           data-kt-customer-table-toolbar="base"
         >
-          <router-link
-            :to="{ name: 'apps-writers-add' }"
+          <!-- <router-link
+            :to="{ name: 'apps-homelesses-add' }"
             class="btn btn-primary"
           >
             <KTIcon icon-name="plus" icon-class="fs-2" />
-            {{ $t("addWriter") }}
-          </router-link>
+            {{ $t("addHomelesse") }}
+          </router-link> -->
         </div>
         <div
           v-else
@@ -46,7 +46,7 @@
           <button
             type="button"
             class="btn btn-danger"
-            @click="deleteSelectedWriters"
+            @click="deleteSelectedPublishers"
           >
             {{ $t("deleteSelected") }}
           </button>
@@ -69,24 +69,38 @@
         :totalPages="Number(dataVal)"
         @page-change="fetching"
       >
-        <!-- Name Column -->
-        <template v-slot:name="{ row: writer }">{{
-          writer.name[locale]
-        }}</template>
-        <!-- Slug Column -->
-        <template v-slot:slug="{ row: writer }">{{
-          writer.slug[locale]
-        }}</template>
-        <!-- Created At Column -->
-        <template v-slot:created_at="{ row: writer }">
-          {{ new Date(writer.created_at).toLocaleString() }}
+        <!-- Year Column -->
+        <template v-slot:status="{ row: publisher }">
+          <span
+            :class="[
+              'badge',
+              publisher.status === 'approved'
+                ? 'badge-success'
+                : publisher.status === 'rejected'
+                  ? 'badge-danger'
+                  : 'badge-warning',
+            ]"
+          >
+            {{ publisher.status }}
+          </span>
         </template>
-        <!-- Updated At Column -->
-        <template v-slot:updated_at="{ row: writer }">
-          {{ new Date(writer.updated_at).toLocaleString() }}
+
+        <!-- Rate Column -->
+        <template v-slot:address="{ row: publisher }">{{
+          publisher.address
+        }}</template>
+        <!-- Logo Column -->
+        <template v-slot:logo="{ row: publisher }">
+          <img
+            :src="publisher.image"
+            alt="Publisher Logo"
+            class="img-thumbnail"
+            style="max-height: 200px; max-width: 100px"
+          />
         </template>
+
         <!-- Actions Column -->
-        <template v-slot:actions="{ row: writer }">
+        <template v-slot:actions="{ row: publisher }">
           <a
             href="#"
             class="btn btn-sm btn-light btn-active-light-primary"
@@ -103,20 +117,35 @@
             <div class="menu-item px-3">
               <router-link
                 class="menu-link px-3 w-full"
-                :to="`/apps/writers/updateWriter/${writer.id}`"
+                :to="`/apps/homelesses/updateHomelesse/${publisher.id}`"
               >
                 {{ $t("edit") }}
               </router-link>
             </div>
             <div class="menu-item px-3">
-              <a @click="deleteWriter(writer.id)" class="menu-link px-3">{{
-                $t("delete")
-              }}</a>
+              <router-link
+                class="menu-link px-3 w-full"
+                :to="`/apps/homelesses/homeless/${publisher.id}`"
+              >
+                {{ $t("view") }}
+              </router-link>
+            </div>
+
+            <div class="menu-item px-3">
+              <a
+                @click="deletePublisher(publisher.id)"
+                class="menu-link px-3"
+                >{{ $t("delete") }}</a
+              >
             </div>
           </div>
         </template>
       </Datatable>
     </div>
+    <!-- temp -->
+    <!-- <Chat />
+    <ConnectionManager />
+    <ConnectionState /> -->
   </div>
 </template>
 
@@ -128,26 +157,30 @@ import { useFetch } from "@vueuse/core";
 import debounce from "lodash.debounce";
 import Swal from "sweetalert2";
 import Datatable from "@/components/kt-datatable/KTDataTableV2.vue";
-
+import Stars from "@/components/StarsWithoutText.vue";
 import { useRouter } from "vue-router";
-
+// import Chat from "@/components/Chat.vue";
+// import ConnectionManager from "@/components/ConnectionManager.vue";
+// import ConnectionState from "@/components/ConnectionState.vue";
 const dataVal = ref();
 
 const router = useRouter();
+
 const load = ref(false);
 const selectedIds = ref([]);
 const search = ref("");
 const tableData = ref([]);
-const initWriters = ref([]);
+const initPublishers = ref([]);
 const { locale } = useI18n();
+// const dataVal = ref();
 
-// Fetch writers
+// Fetch publishers
 const fetching = async (page = 1) => {
   try {
     load.value = true;
 
-    const { data } = await useFetch(
-      `${import.meta.env.VITE_APP_API_URL_NEW}/writers?page=${page}`,
+    const response = await fetch(
+      `${import.meta.env.VITE_APP_API_URL_NEW}/homelesses?page=${page}`,
       {
         method: "GET",
         headers: {
@@ -155,62 +188,75 @@ const fetching = async (page = 1) => {
           Authorization: `Bearer ${localStorage.getItem("authToken")}`,
         },
       },
-    ).json();
-    tableData.value = [...data.value.data.data];
-    initWriters.value = [...tableData.value];
-    dataVal.value = data.value.data.meta.total;
+    );
+
+    if (!response.ok) {
+      const errorData = await response.json(); // Parse error response body
+      console.error("Error response:", response.status, errorData);
+      if (response.status === 401) {
+        localStorage.removeItem("authToken");
+        router.replace("/");
+      }
+    }
+
+    const data = await response.json();
+    console.log(data.data.data);
+
+    tableData.value = [...data.data.data];
+    initPublishers.value = [...tableData.value];
+    dataVal.value = data.data.meta.total;
 
     load.value = false;
   } catch (error) {
     load.value = false;
     console.error("Error fetching data:", error);
-    localStorage.removeItem("authToken");
-    router.replace("/");
   }
 };
 
 // Fetch initial data
 fetching();
 
+// Watch locale and refetch data on change
+watch(
+  () => locale.value,
+  () => fetching(),
+);
+
 // Table header configuration
 const tableHeader = ref([
   {
-    columnName: "Name",
-    columnLabel: "name",
+    columnName: "status",
+    columnLabel: "status",
     sortEnabled: true,
     columnWidth: 175,
   },
   {
-    columnName: "Slug",
-    columnLabel: "slug",
+    columnName: "address",
+    columnLabel: "address",
     sortEnabled: true,
     columnWidth: 175,
   },
+
   {
-    columnName: "Created At",
-    columnLabel: "created_at",
-    sortEnabled: true,
+    columnName: "logo",
+    columnLabel: "logo",
+    sortEnabled: false,
     columnWidth: 175,
   },
+
   {
-    columnName: "Updated At",
-    columnLabel: "updated_at",
-    sortEnabled: true,
-    columnWidth: 175,
-  },
-  {
-    columnName: "Actions",
+    columnName: "actions",
     columnLabel: "actions",
     sortEnabled: false,
-    columnWidth: 120,
+    columnWidth: 100,
   },
 ]);
 
-// Delete a single writer
-const deleteWriter = async (id) => {
+// Delete a single publisher
+const deletePublisher = async (id) => {
   const confirmResult = await Swal.fire({
     title: "Are you sure?",
-    text: "You are about to delete this writer.",
+    text: "You are about to delete this publisher.",
     icon: "warning",
     showCancelButton: true,
     confirmButtonText: "Yes, delete it!",
@@ -223,37 +269,50 @@ const deleteWriter = async (id) => {
 
   if (confirmResult.isConfirmed) {
     try {
-      await useFetch(`${import.meta.env.VITE_APP_API_URL_NEW}/writers/${id}`, {
-        method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+      await useFetch(
+        `${import.meta.env.VITE_APP_API_URL_NEW}/homelesses/${id}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+          },
         },
+      );
+
+      tableData.value = tableData.value.filter(
+        (publisher) => publisher.id !== id,
+      );
+      initPublishers.value = initPublishers.value.filter(
+        (publisher) => publisher.id !== id,
+      );
+
+      Swal.fire({
+        title: "Deleted!",
+        text: "The homelesse has been deleted.",
+        icon: "success",
+        confirmButtonText: "OK",
+        customClass: { confirmButton: "btn btn-primary" },
       });
-
-      tableData.value = tableData.value.filter((writer) => writer.id !== id);
-      initWriters.value = initWriters.value.filter(
-        (writer) => writer.id !== id,
-      );
-
-      Swal.fire("Deleted!", "The writer has been deleted.", "success");
     } catch (error) {
-      console.error("Error deleting writer:", error);
-      Swal.fire(
-        "Error!",
-        "Failed to delete the writer. Please try again.",
-        "error",
-      );
+      console.error("Error deleting homelesse:", error);
+      Swal.fire({
+        title: "Error!",
+        text: "Failed to delete the homelesse. Please try again.",
+        icon: "error",
+        confirmButtonText: "OK",
+        customClass: { confirmButton: "btn btn-danger" },
+      });
     }
   }
 };
 
-// Delete multiple writers
-const deleteSelectedWriters = async () => {
+// Delete multiple publishers
+const deleteSelectedPublishers = async () => {
   if (!selectedIds.value.length) return;
 
   const confirmResult = await Swal.fire({
     title: "Are you sure?",
-    text: `You are about to delete ${selectedIds.value.length} writers.`,
+    text: `You are about to delete ${selectedIds.value.length} homelesse.`,
     icon: "warning",
     showCancelButton: true,
     confirmButtonText: "Yes, delete them!",
@@ -268,7 +327,7 @@ const deleteSelectedWriters = async () => {
     try {
       await Promise.all(
         selectedIds.value.map((id) =>
-          useFetch(`${import.meta.env.VITE_APP_API_URL_NEW}/writers/${id}`, {
+          useFetch(`${import.meta.env.VITE_APP_API_URL_NEW}/homelesses/${id}`, {
             method: "DELETE",
             headers: {
               Authorization: `Bearer ${localStorage.getItem("authToken")}`,
@@ -278,25 +337,29 @@ const deleteSelectedWriters = async () => {
       );
 
       tableData.value = tableData.value.filter(
-        (writer) => !selectedIds.value.includes(writer.id),
+        (publisher) => !selectedIds.value.includes(publisher.id),
       );
-      initWriters.value = initWriters.value.filter(
-        (writer) => !selectedIds.value.includes(writer.id),
+      initPublishers.value = initPublishers.value.filter(
+        (publisher) => !selectedIds.value.includes(publisher.id),
       );
 
-      Swal.fire(
-        "Deleted!",
-        "The selected writers have been deleted.",
-        "success",
-      );
+      Swal.fire({
+        title: "Deleted!",
+        text: "The selected homelesses have been deleted.",
+        icon: "success",
+        confirmButtonText: "OK",
+        customClass: { confirmButton: "btn btn-primary" },
+      });
       selectedIds.value = [];
     } catch (error) {
-      console.error("Error deleting selected writers:", error);
-      Swal.fire(
-        "Error!",
-        "Failed to delete some writers. Please try again.",
-        "error",
-      );
+      console.error("Error deleting selected homelesses:", error);
+      Swal.fire({
+        title: "Error!",
+        text: "Failed to delete some homelesses. Please try again.",
+        icon: "error",
+        confirmButtonText: "OK",
+        customClass: { confirmButton: "btn btn-danger" },
+      });
     }
   }
 };
@@ -305,7 +368,7 @@ const deleteSelectedWriters = async () => {
 const debouncedSearch = debounce(() => {
   if (search.value) {
     const lowerSearch = search.value.toLowerCase();
-    tableData.value = initWriters.value.filter((item) =>
+    tableData.value = initPublishers.value.filter((item) =>
       Object.values(item).some(
         (field) =>
           typeof field === "string" &&
@@ -313,7 +376,7 @@ const debouncedSearch = debounce(() => {
       ),
     );
   } else {
-    tableData.value = [...initWriters.value];
+    tableData.value = [...initPublishers.value];
   }
 }, 300);
 
@@ -326,8 +389,9 @@ const onItemSelect = (selectedItems) => {
 const sort = ({ label, order }) => {
   const reverse = order === "desc";
   tableData.value.sort((a, b) => {
-    const valueA = a[label] || "";
-    const valueB = b[label] || "";
+    const valueA = a[label] || ""; // Ensure there's a fallback if the label is undefined
+    const valueB = b[label] || ""; // Ensure there's a fallback if the label is undefined
+
     return reverse
       ? valueB.localeCompare(valueA)
       : valueA.localeCompare(valueB);
@@ -343,4 +407,34 @@ onMounted(() => {
     new Dropdown(element);
   });
 });
+
+const formatDate = (dateString) => {
+  const date = new Date(dateString);
+  return new Intl.DateTimeFormat("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    timeZone: "UTC", // Adjust timezone if needed
+  }).format(date);
+};
 </script>
+<style scoped>
+.badge-success {
+  background-color: #28a745;
+}
+
+.badge-danger {
+  background-color: #dc3545;
+}
+
+.badge-warning {
+  background-color: #ffc107;
+}
+
+.rounded {
+  border-radius: 8px;
+}
+</style>

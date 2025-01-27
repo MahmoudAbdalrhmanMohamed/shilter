@@ -18,13 +18,6 @@
             </div>
             <!--end::Avatar-->
 
-            <!--begin::Name-->
-            <a
-              href="#"
-              class="fs-3 text-gray-800 text-hover-primary fw-bold mb-1"
-            >
-              {{ dataToShow.name }}
-            </a>
             <!--end::Name-->
           </div>
           <!--end::Summary-->
@@ -52,32 +45,27 @@
           >
             <!-- Status Badge with Animation -->
             <div
-              class="badge badge-light-info d-inline text-xl md:text-2xl animate-pulse"
+              :class="[
+                'badge d-inline text-xl capitalize md:text-2xl',
+                {
+                  'badge-gradient-approved': dataToShow.status === 'approved',
+                  'badge-gradient-rejected': dataToShow.status === 'rejected',
+                  'badge-gradient-pending': dataToShow.status === 'pending',
+                },
+              ]"
             >
               {{ dataToShow.status }}
             </div>
             <div class="py-5 fs-6">
               <!-- Location -->
               <div class="fw-bold mt-5">{{ $t("location") }}</div>
-              <div class="text-gray-600">{{ dataToShow.location }}</div>
-
-              <!-- Age -->
-              <div class="fw-bold mt-5">{{ $t("age") }}</div>
-              <div class="text-gray-600">{{ dataToShow.age }}</div>
-
-              <!-- Needs -->
-              <div class="fw-bold mt-5">{{ $t("needs") }}</div>
-              <div class="text-gray-600">
-                <ul>
-                  <li v-for="(need, index) in dataToShow.needs" :key="index">
-                    {{ need }}
-                  </li>
-                </ul>
-              </div>
+              <div class="text-gray-600">{{ dataToShow.address }}</div>
 
               <!-- Description -->
               <div class="fw-bold mt-5">{{ $t("description") }}</div>
-              <div class="text-gray-600">{{ dataToShow.description }}</div>
+              <div class="text-gray-600">
+                {{ dataToShow.note ? dataToShow.note : $t("noDataFound") }}
+              </div>
 
               <!-- Buttons -->
               <div class="flex items-center w-full mt-5">
@@ -110,8 +98,8 @@
           <h3 class="fw-bold mb-5">Location Map</h3>
           <!-- Google Map Component -->
           <GoogleMap
-            api-key="AIzaSyDA64gvZkZ_jVnaSoXLb-H0wc2A9xWpe_c"
-            :center="center"
+            :api-key="googleMapsApiKey"
+            :center="mapCenter"
             :zoom="15"
             style="height: 400px; width: 100%"
           >
@@ -127,22 +115,24 @@
     </div>
   </div>
 </template>
+
 <script setup>
 import { ref, onMounted } from "vue";
 import { useI18n } from "vue-i18n";
 import { GoogleMap, Marker } from "vue3-google-map"; // Import GoogleMap and Marker components
+import Swal from "sweetalert2"; // Import SweetAlert2
+import { useRoute } from "vue-router";
 
-const { t } = useI18n();
+const { t, locale } = useI18n();
 
 // Reactive state
 const dataToShow = ref(null);
 const loading = ref(true); // Start with loading true
-const isDetailsOpen = ref(false); // Track if details are open
+const isDetailsOpen = ref(true); // Track if details are open
 
 // Google Maps API Key (replace with your actual API key)
 const googleMapsApiKey = "AIzaSyDA64gvZkZ_jVnaSoXLb-H0wc2A9xWpe_c";
 
-const center = { lat: 40.689247, lng: -74.044502 };
 // Map center and marker options
 const mapCenter = ref({ lat: 35.151, lng: 27.156 }); // Default to New York
 const markerOptions = ref({
@@ -150,34 +140,52 @@ const markerOptions = ref({
   title: "Homeless Person Location",
 });
 
-// Fake data for a homeless person
-const fakeData = {
-  id: 1,
-  name: "John Doe",
-  image: "https://via.placeholder.com/150",
-  status: "Needs Shelter",
-  location: "New York, USA",
-  age: 45,
-  needs: ["Shelter", "Food", "Clothing"],
-  description:
-    "John has been homeless for 2 years and is seeking assistance to get back on his feet.",
-  language_code: "English", // Added for compatibility with the template
-  followers_count: 120, // Added for compatibility with the template
-  rate_tranlation: 4.5, // Added for compatibility with the template
-  rate_clarity: 4.2, // Added for compatibility with the template
-  experience_type: "Senior", // Added for compatibility with the template
-  type: "Homeless", // Added for compatibility with the template
+// Fetch data from API
+const fetchData = async (id) => {
+  try {
+    const response = await fetch(
+      `${import.meta.env.VITE_APP_API_URL_NEW}/homelesses/${id}`,
+      {
+        headers: {
+          "X-localization": locale.value,
+          Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+        },
+      },
+    );
+    if (!response.ok) {
+      throw new Error("Failed to fetch data");
+    }
+    const data = await response.json();
+    if (data.status) {
+      dataToShow.value = data.data;
+      mapCenter.value = {
+        lat: parseFloat(data.data.latitude),
+        lng: parseFloat(data.data.longitude),
+      };
+      markerOptions.value.position = {
+        lat: parseFloat(data.data.latitude),
+        lng: parseFloat(data.data.longitude),
+      };
+    } else {
+      console.error("Failed to fetch data:", data.message);
+    }
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    Swal.fire({
+      icon: "error",
+      title: "Error",
+      text: "Failed to fetch data. Please try again later.",
+    });
+  } finally {
+    loading.value = false;
+  }
 };
 
-// Simulate loading state
+const route = useRoute();
+// Fetch data when component is mounted
 
-dataToShow.value = fakeData;
-loading.value = false;
-
-// Update map center and marker based on fake data
-
-mapCenter.value = { lat: 35.151, lng: 27.156 };
-markerOptions.value.position = { lat: 35.151, lng: 27.156 };
+const id = route.params.homeless; // Get ID from route params
+fetchData(id);
 
 // Toggle details visibility
 const toggleDetails = () => {
@@ -185,15 +193,88 @@ const toggleDetails = () => {
 };
 
 // Accept request
-const acceptRequest = (id) => {
-  console.log("Accepted request for ID:", id);
-  alert(`Accepted request for ID: ${id}`);
+const acceptRequest = async (id) => {
+  try {
+    const response = await fetch(
+      `${import.meta.env.VITE_APP_API_URL_NEW}/homelesses/${id}/approved`,
+      {
+        method: "PATCH",
+        headers: {
+          "X-localization": locale.value,
+          Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+        },
+      },
+    );
+    if (!response.ok) {
+      throw new Error("Failed to accept request");
+    }
+    const data = await response.json();
+    if (data.status) {
+      dataToShow.value.status = "approved";
+      await Swal.fire({
+        icon: "success",
+        title: "Success",
+        text: "Request accepted successfully!",
+      });
+      fetchData(id); // Refresh data
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: data.message || "Failed to accept request",
+      });
+    }
+  } catch (error) {
+    console.error("Error accepting request:", error);
+    Swal.fire({
+      icon: "error",
+      title: "Error",
+      text: "Error accepting request. Please try again later.",
+    });
+  }
 };
 
 // Reject request
-const rejectRequest = (id) => {
-  console.log("Rejected request for ID:", id);
-  alert(`Rejected request for ID: ${id}`);
+const rejectRequest = async (id) => {
+  try {
+    const response = await fetch(
+      `${import.meta.env.VITE_APP_API_URL_NEW}/homelesses/${id}/rejected`,
+      {
+        method: "PATCH",
+        headers: {
+          "X-localization": locale.value,
+          Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+        },
+      },
+    );
+    if (!response.ok) {
+      throw new Error("Failed to reject request");
+    }
+    const data = await response.json();
+    if (data.status) {
+      dataToShow.value.status = "rejected";
+
+      await Swal.fire({
+        icon: "success",
+        title: "Success",
+        text: "Request rejected successfully!",
+      });
+      fetchData(id); // Refresh data
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: data.message || "Failed to reject request",
+      });
+    }
+  } catch (error) {
+    console.error("Error rejecting request:", error);
+    Swal.fire({
+      icon: "error",
+      title: "Error",
+      text: "Error rejecting request. Please try again later.",
+    });
+  }
 };
 </script>
 
@@ -356,5 +437,58 @@ const rejectRequest = (id) => {
   width: 100%;
   border-radius: 12px;
   overflow: hidden;
+}
+.badge {
+  transition: all 0.5s ease;
+}
+
+.badge-gradient-approved {
+  animation: pulse-badge 2s infinite;
+  background: linear-gradient(
+    135deg,
+    #6ee7b7,
+    #3b82f6
+  ); /* Green-Blue gradient */
+  color: white;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-weight: 600;
+  box-shadow: 0 4px 6px rgba(59, 130, 246, 0.2); /* Subtle shadow */
+}
+
+.badge-gradient-rejected {
+  animation: pulse-badge 2s infinite;
+  background: linear-gradient(
+    135deg,
+    #f87171,
+    #ef4444
+  ); /* Light to Dark Red gradient */
+  color: white;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-weight: 600;
+  box-shadow: 0 4px 6px rgba(239, 68, 68, 0.2); /* Subtle shadow */
+}
+
+.badge-gradient-pending {
+  animation: pulse-badge 2s infinite;
+  background: linear-gradient(
+    135deg,
+    #fcd34d,
+    #f59e0b
+  ); /* Yellow-Orange gradient */
+  color: white;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-weight: 600;
+  box-shadow: 0 4px 6px rgba(245, 158, 11, 0.2); /* Subtle shadow */
+}
+
+.badge-gradient-approved:hover,
+.badge-gradient-rejected:hover,
+.badge-gradient-pending:hover {
+  filter: brightness(1.1);
+  transform: scale(1.05); /* Slight zoom-in */
+  transition: all 0.3s ease;
 }
 </style>

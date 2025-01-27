@@ -82,30 +82,30 @@ const routes: Array<RouteRecordRaw> = [
       },
 
       {
-        path: "/apps/writers/addWriter",
-        name: "apps-writers-add",
+        path: "/apps/homelesses/addHomelesse",
+        name: "apps-homelesses-add",
         component: () => import("@/views/apps/writers/addWriter.vue"),
         meta: {
-          pageTitle: "addWriter",
-          breadcrumbs: ["Apps", "Writers", "Add Writer"],
+          pageTitle: "addHomelesse",
+          breadcrumbs: ["Apps", "homelesses", "addHomelesse"],
         },
       },
       {
-        path: "/apps/Writers/updateWriter/:updateWriter",
-        name: "apps-Writers-updateWriter",
+        path: "/apps/homelesses/updateHomelesse/:updateHomeless",
+        name: "apps-homelesses-updateHomelesse",
         component: () => import("@/views/apps/writers/UpdateWriter.vue"),
         meta: {
-          pageTitle: "updateWriter",
-          breadcrumbs: ["Apps", "Writers", "Update Writer"],
+          pageTitle: "updateHomelesse",
+          breadcrumbs: ["Apps", "homelesses", "updateHomelesse"],
         },
       },
       {
-        path: "/apps/writers/all",
-        name: "apps-writers-all",
+        path: "/apps/homelesses/all",
+        name: "apps-homelesses-all",
         component: () => import("@/views/apps/writers/WritersComponent.vue"),
         meta: {
-          pageTitle: "Writers",
-          breadcrumbs: ["Apps", "Writers"],
+          pageTitle: "homelesses",
+          breadcrumbs: ["Apps", "homelesses"],
         },
       },
 
@@ -295,13 +295,13 @@ const routes: Array<RouteRecordRaw> = [
         },
       },
       {
-        path: "/apps/translators/TranslatorChapter/:Translator",
-        name: "apps-tanslators-TranslatorChapter",
+        path: "/apps/homelesses/homeless/:homeless",
+        name: "apps-homelesses-homeless",
         component: () =>
           import("@/views/apps/translators/TranslatorChapter.vue"),
         meta: {
-          pageTitle: "Translator",
-          breadcrumbs: ["Apps", "Translators", "Translator"],
+          pageTitle: "homeless",
+          breadcrumbs: ["Apps", "homelesses", "homeless"],
         },
       },
       {

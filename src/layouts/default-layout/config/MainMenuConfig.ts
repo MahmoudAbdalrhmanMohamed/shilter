@@ -26,8 +26,8 @@ const MainMenuConfig: Array<MenuItem> = [
             route: "/apps/categories/all",
           },
           {
-            heading: "Add Publisher",
-            route: "/apps/publishers/addPublisher",
+            heading: "addCategorie",
+            route: "/apps/categories/addCategorie",
           },
         ],
       },
@@ -50,18 +50,18 @@ const MainMenuConfig: Array<MenuItem> = [
       },
 
       {
-        sectionTitle: "Writers",
-        route: "/writers",
+        sectionTitle: "homelesses",
+        route: "/homelesses",
         keenthemesIcon: "chart",
         bootstrapIcon: "bi-printer",
         sub: [
           {
-            heading: "Writers",
-            route: "/apps/writers/all",
+            heading: "homelesses",
+            route: "/apps/homelesses/all",
           },
           {
-            heading: "Add Writer",
-            route: "/apps/writers/addWriter",
+            heading: "addHomelesse",
+            route: "/apps/homelesses/addHomelesse",
           },
         ],
       },
