@@ -99,7 +99,7 @@
 
           <MapboxMap
             style="height: 400px"
-            :zoom="10"
+            :zoom="8"
             :center="[
               parseFloat(dataToShow.latitude),
               parseFloat(dataToShow.longitude),
