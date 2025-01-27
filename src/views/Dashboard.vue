@@ -101,8 +101,8 @@ const fetching = async () => {
     }
   } catch (error) {
     console.error("Error:", error.message);
-    // localStorage.removeItem("authToken");
-    // router.replace({ name: "sign-in" });
+    localStorage.removeItem("authToken");
+    router.replace({ name: "sign-in" });
   } finally {
     loading.value = false;
     isFetching.value = false;
