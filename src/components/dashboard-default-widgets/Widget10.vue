@@ -73,7 +73,7 @@
                         `badge md:text-lg text-base py-1  text-ellipsis max-w-40`,
                         locale === 'en' ? '' : 'text-end',
                       ]"
-                      >{{ row.address }}</span
+                      >{{ row.address ? row.address : "no address" }}</span
                     >
                   </td>
 
