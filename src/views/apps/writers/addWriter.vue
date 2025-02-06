@@ -10,7 +10,7 @@
       <!-- Heading -->
       <div class="text-center mb-10">
         <h1 class="text-gray-900 mb-3 text-xl md:text-3xl">
-          {{ $t("addWriter") }}
+          {{ $t("addHomelesse") }}
         </h1>
       </div>
 
@@ -48,7 +48,7 @@
           id="kt_add_writer_submit"
           class="btn btn-lg btn-primary w-100 mb-5"
         >
-          <span class="indicator-label">{{ $t("addWriter") }}</span>
+          <span class="indicator-label">{{ $t("addHomelesse") }}</span>
           <span class="indicator-progress">
             {{ $t("pleaseWait") }}
             <span
