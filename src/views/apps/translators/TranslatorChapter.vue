@@ -109,8 +109,8 @@
           >
             <MapboxMarker
               :lng-lat="[
-                parseFloat(dataToShow.latitude),
                 parseFloat(dataToShow.longitude),
+                parseFloat(dataToShow.latitude),
               ]"
             />
           </MapboxMap>
