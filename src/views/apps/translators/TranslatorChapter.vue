@@ -58,8 +58,19 @@
             </div>
             <div class="py-5 fs-6">
               <!-- Location -->
-              <div class="fw-bold mt-5">{{ $t("location") }}</div>
-              <div class="text-gray-600">{{ dataToShow.address }}</div>
+              <div class="fw-bold mt-5">{{ $t("country") }}</div>
+              <div class="text-gray-600">{{ dataToShow.country }}</div>
+
+              <div class="fw-bold mt-5">{{ $t("categories") }}</div>
+              <div class="flex mt-2 flex-wrap gap-1 items-center">
+                <span
+                  class="rounded text-white px-2 py-1"
+                  :class="classes[index % classes.length]"
+                  v-for="(i, index) in dataToShow.categories"
+                >
+                  {{ i.name[locale] }}
+                </span>
+              </div>
 
               <!-- Description -->
               <div class="fw-bold mt-5">{{ $t("description") }}</div>
@@ -145,6 +156,12 @@ import Swal from "sweetalert2"; // Import SweetAlert2
 import { useRoute } from "vue-router";
 
 const { t, locale } = useI18n();
+const classes = ref([
+  "bg-red-500",
+  "bg-green-500",
+  "bg-yellow-500",
+  "bg-black",
+]);
 
 // Reactive state
 const dataToShow = ref(null);

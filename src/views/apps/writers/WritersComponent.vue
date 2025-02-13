@@ -87,9 +87,20 @@
         </template>
 
         <!-- Rate Column -->
-        <template v-slot:address="{ row: publisher }">{{
-          publisher.address
+        <template v-slot:country="{ row: publisher }">{{
+          publisher.country
         }}</template>
+        <template v-slot:categories="{ row: publisher }">
+          <div class="flex flex-wrap gap-1 items-center">
+            <span
+              class="rounded text-white px-2 py-1"
+              :class="classes[index % classes.length]"
+              v-for="(i, index) in publisher.categories"
+            >
+              {{ i.name }}
+            </span>
+          </div>
+        </template>
         <!-- Logo Column -->
         <template v-slot:logo="{ row: publisher }">
           <img
@@ -151,6 +162,12 @@
 </template>
 
 <script setup>
+const classes = ref([
+  "bg-red-500",
+  "bg-green-500",
+  "bg-yellow-500",
+  "bg-black",
+]);
 import { ref, watch, onMounted } from "vue";
 import { Dropdown } from "bootstrap";
 import { useI18n } from "vue-i18n";
@@ -232,12 +249,18 @@ const tableHeader = ref([
     columnWidth: 175,
   },
   {
-    columnName: "address",
-    columnLabel: "address",
+    columnName: "country",
+    columnLabel: "country",
     sortEnabled: true,
     columnWidth: 175,
   },
 
+  {
+    columnName: "categories",
+    columnLabel: "categories",
+    sortEnabled: false,
+    columnWidth: 225,
+  },
   {
     columnName: "logo",
     columnLabel: "logo",
@@ -249,7 +272,7 @@ const tableHeader = ref([
     columnName: "actions",
     columnLabel: "actions",
     sortEnabled: false,
-    columnWidth: 100,
+    columnWidth: 150,
   },
 ]);
 
