@@ -60,6 +60,7 @@
         @on-sort="sort"
         @on-items-select="onItemSelect"
         :data="tableData"
+        :itemsPerPage="per_page"
         :header="tableHeader"
         :enable-items-per-page-dropdown="false"
         :checkbox-enabled="true"
@@ -181,6 +182,7 @@ import { useRouter } from "vue-router";
 // import ConnectionManager from "@/components/ConnectionManager.vue";
 // import ConnectionState from "@/components/ConnectionState.vue";
 const dataVal = ref();
+const per_page = ref();
 
 const router = useRouter();
 
@@ -223,6 +225,7 @@ const fetching = async (page = 1) => {
     tableData.value = [...data.data.data];
     initPublishers.value = [...tableData.value];
     dataVal.value = data.data.meta.total;
+    per_page.value = data.data.meta.per_page;
 
     load.value = false;
   } catch (error) {
@@ -243,6 +246,12 @@ watch(
 // Table header configuration
 const tableHeader = ref([
   {
+    columnName: "logo",
+    columnLabel: "logo",
+    sortEnabled: false,
+    columnWidth: 175,
+  },
+  {
     columnName: "status",
     columnLabel: "status",
     sortEnabled: true,
@@ -260,12 +269,6 @@ const tableHeader = ref([
     columnLabel: "categories",
     sortEnabled: false,
     columnWidth: 225,
-  },
-  {
-    columnName: "logo",
-    columnLabel: "logo",
-    sortEnabled: false,
-    columnWidth: 175,
   },
 
   {

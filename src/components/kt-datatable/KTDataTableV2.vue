@@ -61,10 +61,14 @@ const currentPage = ref(props.currentPage);
 const itemsInTable = ref(props.itemsPerPage);
 
 // Watchers
-watch(itemsInTable, (val) => {
-  currentPage.value = 1;
-  emit("on-items-per-page-change", val);
-});
+watch(
+  () => props.itemsPerPage,
+  (val) => {
+    itemsInTable.value = val;
+    currentPage.value = 1;
+    emit("on-items-per-page-change", val);
+  },
+);
 
 // Methods
 const pageChange = (page) => {
