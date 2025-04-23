@@ -112,8 +112,8 @@
             style="height: 400px"
             :zoom="8"
             :center="[
-              parseFloat(dataToShow.latitude),
               parseFloat(dataToShow.longitude),
+              parseFloat(dataToShow.latitude),
             ]"
             map-style="mapbox://styles/yasta/cm6f68so800ao01r5dbboe5o5"
             access-token="pk.eyJ1IjoieWFzdGEiLCJhIjoiY200cmhta2h1MDUxdzJ2c2J1Z2d4Z3VlcCJ9.DpzpUq61dpH0mYXqPYZjdw"
