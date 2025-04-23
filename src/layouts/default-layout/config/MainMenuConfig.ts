@@ -59,10 +59,10 @@ const MainMenuConfig: Array<MenuItem> = [
             heading: "homelesses",
             route: "/apps/homelesses/all",
           },
-          {
-            heading: "addHomelesse",
-            route: "/apps/homelesses/addHomelesse",
-          },
+          // {
+          //   heading: "addHomelesse",
+          //   route: "/apps/homelesses/addHomelesse",
+          // },
         ],
       },
 

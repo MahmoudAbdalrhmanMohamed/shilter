@@ -127,14 +127,14 @@
             class="dropdown-menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-primary fw-semibold fs-7 w-125px py-4"
             aria-labelledby="dropdownMenuButton"
           >
-            <div class="menu-item px-3">
+            <!-- <div class="menu-item px-3">
               <router-link
                 class="menu-link px-3 w-full"
                 :to="`/apps/homelesses/updateHomelesse/${publisher.id}`"
               >
                 {{ $t("edit") }}
               </router-link>
-            </div>
+            </div> -->
             <div class="menu-item px-3">
               <router-link
                 class="menu-link px-3 w-full"
